@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "tracking": "Track Shipment",
+    "quote": "Get a Quote",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "contact": "Contact"
+  },
+  "hero": {
+    "eyebrow": "Live digital waybill",
+    "title_line1": "From the port to your customer's door,",
+    "title_highlight": "every step has a name.",
+    "subtitle": "Aventra runs your sea, air, and land shipments with live tracking and warehouses on one platform.",
+    "cta_track": "Track your shipment",
+    "cta_quote": "Get a quote"
+  },
+  "tracking": {
+    "title": "Where's your shipment right now?",
+    "placeholder": "e.g. AVT-2026-04821",
+    "button": "Track",
+    "not_found": "No shipment found with this number. Double-check the waybill number and try again."
+  },
+  "footer": {
+    "tagline": "Your logistics partner from pickup to final delivery, on one unified tracking and warehousing platform."
+  }
+}
