@@ -1,12 +1,24 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
     <section className="bg-ink text-white relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6 py-20 lg:py-28 grid lg:grid-cols-2 gap-14 items-center relative">
+      <Image
+        src="/hero-bg.jpg"
+        alt="أسطول أفنترا للشحن البحري والجوي والبري"
+        fill
+        priority
+        className="object-cover object-center"
+      />
+      {/* Dark gradient overlay so text stays readable over the photo */}
+      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/60" />
+      <div className="absolute inset-0 bg-ink/30" />
+
+      <div className="max-w-6xl mx-auto px-6 py-20 lg:py-28 grid lg:grid-cols-2 gap-14 items-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
