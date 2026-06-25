@@ -3,6 +3,7 @@ import { Tajawal, Big_Shoulders_Display, IBM_Plex_Mono } from "next/font/google"
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { createClient } from "@/lib/supabase/server";
 
 const tajawal = Tajawal({
   subsets: ["arabic", "latin"],
@@ -31,15 +32,18 @@ export const metadata: Metadata = {
     "شحن بحري وجوي وبري مع تتبع لحظي وتخزين مرتبط بنظام واحد. اطلب عرض سعر أو تابع شحنتك الآن.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
   return (
     <html lang="ar" dir="rtl" className={`${tajawal.variable} ${bigShoulders.variable} ${plexMono.variable}`}>
       <body className="antialiased font-sans">
-        <Header />
+        <Header isLoggedIn={!!data.user} />
         <main>{children}</main>
         <Footer />
       </body>

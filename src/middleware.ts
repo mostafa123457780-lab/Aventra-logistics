@@ -1,13 +1,30 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
 
-// Phase 2: once Supabase Auth + role-based dashboards are added, check the
-// session/role here and redirect unauthenticated or unauthorized requests
-// away from /dashboard, /admin, /operations, /accountant, /warehouse,
-// /driver, and /customer routes.
-export function middleware(request: NextRequest) {
-  return NextResponse.next();
+export async function middleware(request: NextRequest) {
+  const { supabaseResponse, user } = await updateSession(request);
+
+  const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard");
+  const isAuthRoute = request.nextUrl.pathname.startsWith("/auth");
+
+  if (isDashboardRoute && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/login";
+    url.searchParams.set("next", request.nextUrl.pathname);
+    return NextResponse.redirect(url);
+  }
+
+  // Already logged in? Skip the login/register screens.
+  if (isAuthRoute && user && !request.nextUrl.pathname.startsWith("/auth/reset-password")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
+  return supabaseResponse;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/operations/:path*", "/accountant/:path*", "/warehouse/:path*", "/driver/:path*", "/customer/:path*"],
+  matcher: ["/dashboard/:path*", "/auth/:path*"],
 };

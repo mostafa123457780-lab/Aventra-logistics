@@ -11,7 +11,7 @@ const navLinks = [
   { href: "/contact", label: "تواصل معنا" },
 ];
 
-export default function Header() {
+export default function Header({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
     <header className="sticky top-0 z-50 bg-paper/90 backdrop-blur border-b border-black/10">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -40,6 +40,12 @@ export default function Header() {
           >
             EN
           </button>
+          <Link
+            href={isLoggedIn ? "/dashboard" : "/auth/login"}
+            className="hidden sm:inline text-sm font-bold text-ink hover:text-amber"
+          >
+            {isLoggedIn ? "لوحة التحكم" : "تسجيل الدخول"}
+          </Link>
           <Button href="/quote" variant="primary" className="hidden sm:inline-flex !px-4 !py-2 text-sm">
             اطلب عرض سعر
           </Button>

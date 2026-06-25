@@ -210,14 +210,68 @@ create table audit_logs (
 );
 
 -- ============================================================
+-- NEW USER PROVISIONING
+-- ============================================================
+-- Fires when someone completes Supabase Auth sign-up (see src/app/auth/register).
+-- Reads full_name/phone from the signUp() call's `options.data` and creates
+-- the matching profiles + customers rows with the default CUSTOMER role.
+
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, email, full_name, phone, role)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data->>'full_name', new.email),
+    new.raw_user_meta_data->>'phone',
+    'CUSTOMER'
+  );
+
+  insert into public.customers (profile_id)
+  values (new.id);
+
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+-- ============================================================
 -- ROW LEVEL SECURITY (representative policies — extend per role)
 -- ============================================================
 
+alter table profiles enable row level security;
+alter table customers enable row level security;
 alter table shipments enable row level security;
 alter table invoices enable row level security;
 alter table requests enable row level security;
 alter table trips enable row level security;
 alter table inventory enable row level security;
+
+-- Profiles: everyone can read their own row; admins read all
+create policy "own_profile" on profiles
+  for select using (id = auth.uid());
+
+create policy "admin_all_profiles" on profiles
+  for all using (
+    exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'ADMIN')
+  );
+
+-- Customers: own row only; admins full access
+create policy "own_customer_row" on customers
+  for select using (profile_id = auth.uid());
+
+create policy "admin_all_customers" on customers
+  for all using (
+    exists (select 1 from profiles where profiles.id = auth.uid() and profiles.role = 'ADMIN')
+  );
 
 -- Admins: full access
 create policy "admin_full_access_shipments" on shipments
