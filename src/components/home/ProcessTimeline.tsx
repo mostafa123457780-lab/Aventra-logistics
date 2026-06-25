@@ -13,7 +13,7 @@ export function ProcessTimeline() {
     <section className="max-w-6xl mx-auto px-6 py-20">
       <Reveal className="mb-12">
         <span className="font-mono text-xs text-rust">رحلة الشحنة</span>
-        <h2 className="text-3xl font-extrabold mt-2">من التسليم لنا… لحد ما توصل.</h2>
+        <h2 className="text-3xl font-extrabold tracking-tight leading-[1.25] mt-2">من التسليم لنا… لحد ما توصل.</h2>
       </Reveal>
       <div className="grid md:grid-cols-5 gap-6">
         {steps.map((step, i) => (

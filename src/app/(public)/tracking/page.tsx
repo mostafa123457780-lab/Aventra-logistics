@@ -49,7 +49,7 @@ export default function TrackingPage() {
       <div className="max-w-3xl mx-auto px-6">
         <Reveal className="mb-10 text-center">
           <span className="font-mono text-xs text-rust">تتبع الشحنة</span>
-          <h1 className="text-3xl font-extrabold mt-2 mb-3">فين شحنتك دلوقتي؟</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-[1.25] mt-2 mb-3">فين شحنتك دلوقتي؟</h1>
           <p className="text-steel">
             جرّب رقم: <span className="font-mono" dir="ltr">AVT-2026-04821</span>
           </p>

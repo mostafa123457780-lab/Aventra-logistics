@@ -31,7 +31,7 @@ export default function FaqPage() {
       <div className="max-w-2xl mx-auto px-6">
         <Reveal className="mb-10">
           <span className="font-mono text-xs text-rust">الأسئلة الشائعة</span>
-          <h1 className="text-3xl font-extrabold mt-2">عندك سؤال؟ يمكن جاوبنا عليه هنا.</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-[1.25] mt-2">عندك سؤال؟ يمكن جاوبنا عليه هنا.</h1>
         </Reveal>
 
         <div className="space-y-3">

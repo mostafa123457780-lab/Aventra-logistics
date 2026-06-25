@@ -16,7 +16,7 @@ export function StatsBand() {
             <div className="num text-4xl text-amber" dir="ltr">
               {s.value}
             </div>
-            <div className="text-xs text-steel mt-1">{s.label}</div>
+            <div className="text-xs text-[#8B98A4] mt-1.5 tracking-wide">{s.label}</div>
           </Reveal>
         ))}
       </div>

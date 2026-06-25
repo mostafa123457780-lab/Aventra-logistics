@@ -28,12 +28,12 @@ export function Hero() {
             <span className="w-1.5 h-1.5 rounded-full bg-amber" />
             بوليصة شحن رقمية لحظية
           </div>
-          <h1 className="text-4xl lg:text-[3.2rem] leading-[1.15] font-extrabold mb-6">
+          <h1 className="text-[clamp(1.75rem,5vw,2.75rem)] leading-[1.18] tracking-tight font-extrabold mb-6">
             من الميناء إلى باب عميلك،
             <br />
             نوثّق <span className="text-amber">كل خطوة</span> باسمها.
           </h1>
-          <p className="text-steel text-lg leading-relaxed max-w-md mb-9">
+          <p className="text-[#A9B4BE] text-lg leading-[1.7] max-w-md mb-9">
             أفنترا تدير شحناتك بحريًا وجويًا وبريًا مع تتبع لحظي ومستودعات
             مرتبطة بنظام واحد، فمفيش مرحلة بتضيع من حساباتك.
           </p>

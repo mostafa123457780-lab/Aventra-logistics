@@ -9,7 +9,7 @@ export default function ContactPage() {
       <div className="max-w-5xl mx-auto px-6 grid lg:grid-cols-2 gap-12">
         <Reveal>
           <span className="font-mono text-xs text-rust">تواصل معنا</span>
-          <h1 className="text-3xl font-extrabold mt-2 mb-6">إحنا هنا لو احتجت أي مساعدة</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-[1.25] mt-2 mb-6">إحنا هنا لو احتجت أي مساعدة</h1>
 
           <div className="space-y-4 text-sm">
             <div className="flex items-center gap-3">

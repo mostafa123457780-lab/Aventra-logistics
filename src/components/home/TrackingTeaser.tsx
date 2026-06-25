@@ -9,7 +9,7 @@ export function TrackingTeaser() {
       <Reveal className="grid lg:grid-cols-2 gap-10 items-center bg-white rounded-2xl p-8 lg:p-12 border border-black/10">
         <div>
           <span className="font-mono text-xs text-rust">تتبع لحظي</span>
-          <h2 className="text-2xl lg:text-3xl font-extrabold mt-2 mb-3">
+          <h2 className="text-2xl lg:text-3xl font-extrabold tracking-tight leading-[1.25] mt-2 mb-3">
             فين شحنتك دلوقتي؟ اعرف بدقة.
           </h2>
           <p className="text-steel">

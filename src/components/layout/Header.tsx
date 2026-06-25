@@ -16,7 +16,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-paper/90 backdrop-blur border-b border-black/10">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <span className="font-display font-extrabold text-2xl tracking-tight text-ink">
+          <span className="font-display font-extrabold tracking-tight text-2xl text-ink">
             AVENTRA
           </span>
           <span className="hidden sm:inline text-xs font-mono text-steel border-r border-steel pr-2 mr-1">

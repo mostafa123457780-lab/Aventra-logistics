@@ -13,7 +13,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-6">
           <Reveal>
             <span className="font-mono text-xs text-amber">عن أفنترا</span>
-            <h1 className="text-4xl font-extrabold mt-2 mb-5">
+            <h1 className="text-4xl font-extrabold tracking-tight leading-[1.25] mt-2 mb-5">
               بنينا أفنترا عشان الشحنة متضيعش بين الأنظمة.
             </h1>
             <p className="text-steel text-lg leading-relaxed">

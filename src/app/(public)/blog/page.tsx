@@ -24,7 +24,7 @@ export default function BlogPage() {
       <div className="max-w-4xl mx-auto px-6">
         <Reveal className="mb-10">
           <span className="font-mono text-xs text-rust">المدونة</span>
-          <h1 className="text-3xl font-extrabold mt-2">مقالات عن الشحن واللوجستيات</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-[1.25] mt-2">مقالات عن الشحن واللوجستيات</h1>
         </Reveal>
 
         <div className="space-y-5">
