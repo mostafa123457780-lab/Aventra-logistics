@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إصلاح فشل البناء</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+    padding: 18px;
+    min-height: 100vh;
+  }
+  h1 { font-size: 19px; margin: 0 0 4px; text-align: center; }
+  p.sub { text-align: center; color: #8b949e; font-size: 13px; margin: 0 0 20px; }
+  .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 16px; }
+  .badge { display: inline-block; background: #da3633; color: white; font-size: 11px; font-weight: bold; border-radius: 6px; padding: 2px 8px; margin-bottom: 8px; }
+  .filepath { font-family: monospace; font-size: 14px; font-weight: bold; color: #58a6ff; margin-bottom: 8px; word-break: break-all; direction: ltr; text-align: left; }
+  .why { font-size: 13px; color: #c9d1d9; margin-bottom: 12px; line-height: 1.6; }
+  pre { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.5; overflow-x: auto; direction: ltr; text-align: left; white-space: pre-wrap; word-break: break-word; margin-bottom: 10px; }
+  .btn-row { display: flex; gap: 8px; }
+  .btn { flex: 1; display: block; padding: 13px; font-size: 14px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; text-align: center; text-decoration: none; }
+  .copy-btn { background: #2ea043; color: white; }
+  .copy-btn:active { background: #238636; }
+  .copy-btn.copied { background: #1f6feb; }
+  .open-btn { background: #30363d; color: #e6edf3; }
+  .status { text-align: center; font-size: 12px; color: #3fb950; min-height: 16px; margin-top: 6px; }
+  .steps { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 14px; font-size: 13px; line-height: 1.8; margin-top: 20px; }
+  textarea { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+
+<h1>⚠️ إصلاح عاجل لفشل البناء</h1>
+<p class="sub">خط Google غير مدعوم كان السبب — هذا التعديل يحل المشكلة</p>
+
+<div class="card">
+  <span class="badge">يوقف نشر الموقع بالكامل</span>
+  <div class="filepath">src/app/layout.tsx</div>
+  <div class="why">الخط "Big Shoulders Display" غير معروف لدى Next.js فبتفشل عملية البناء بالكامل. استبدلناه بخط "Anton" المضمون الدعم بنفس الشكل البصري تقريبًا (Bold/Display).</div>
+  <pre id="f1">import type { Metadata } from "next";
+import { Tajawal, Anton, IBM_Plex_Mono } from "next/font/google";
+import "./globals.css";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import { createClient } from "@/lib/supabase/server";
+
+const tajawal = Tajawal({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "700", "800", "900"],
+  variable: "--font-tajawal",
+  display: "swap",
+});
+
+const bigShoulders = Anton({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-bigshoulders",
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plexmono",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "AVENTRA Logistics — شريكك في الشحن واللوجستيات",
+  description:
+    "شحن بحري وجوي وبري مع تتبع لحظي وتخزين مرتبط بنظام واحد. اطلب عرض سعر أو تابع شحنتك الآن.",
+};
+
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
+  return (
+    <html lang="ar" dir="rtl" className={`${tajawal.variable} ${bigShoulders.variable} ${plexMono.variable}`}>
+      <body className="antialiased font-sans">
+        <Header isLoggedIn={!!data.user} />
+        <main>{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}</pre>
+  <div class="btn-row">
+    <a class="btn open-btn" href="https://github.com/mostafa123457780-lab/aventra-logistics/edit/main/src/app/layout.tsx" target="_blank">افتح الملف على GitHub ↗</a>
+    <button class="btn copy-btn" onclick="copyIt('f1', this, 's1')">نسخ المحتوى 📋</button>
+  </div>
+  <div class="status" id="s1"></div>
+</div>
+
+<div class="steps">
+  <b>الخطوات:</b><br>
+  1. دوس "افتح الملف على GitHub"<br>
+  2. دوس على أيقونة القلم ✏️ (Edit) فوق يمين الملف<br>
+  3. حدد كل المحتوى القديم وامسحه<br>
+  4. رجع هنا ودوس "نسخ المحتوى"<br>
+  5. ارجع لـ GitHub، الصق، نزّل تحت ودوس "Commit changes"<br>
+  6. هيبدأ Deploy جديد تلقائيًا على Netlify خلال ثواني
+</div>
+
+<textarea id="hiddenArea"></textarea>
+
+<script>
+function copyIt(preId, btn, statusId) {
+  const text = document.getElementById(preId).innerText;
+  function showSuccess() {
+    btn.textContent = '✅ تم النسخ!';
+    btn.classList.add('copied');
+    document.getElementById(statusId).textContent = 'دلوقتي الصقه في GitHub وكومت';
+    setTimeout(() => { btn.textContent = 'نسخ المحتوى 📋'; btn.classList.remove('copied'); }, 2200);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallback(text, showSuccess));
+  } else {
+    fallback(text, showSuccess);
+  }
+}
+function fallback(text, onSuccess) {
+  const area = document.getElementById('hiddenArea');
+  area.style.left = '0';
+  area.value = text;
+  area.focus();
+  area.select();
+  try { document.execCommand('copy'); onSuccess(); } catch (e) {}
+  area.style.left = '-9999px';
+}
+</script>
+
+</body>
+</html>
