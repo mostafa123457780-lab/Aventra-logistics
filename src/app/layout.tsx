@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Tajawal, Big_Shoulders_Display, IBM_Plex_Mono } from "next/font/google";
+import { Tajawal, Anton, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -12,9 +12,9 @@ const tajawal = Tajawal({
   display: "swap",
 });
 
-const bigShoulders = Big_Shoulders_Display({
+const bigShoulders = Anton({
   subsets: ["latin"],
-  weight: ["700", "800", "900"],
+  weight: ["400"],
   variable: "--font-bigshoulders",
   display: "swap",
 });
