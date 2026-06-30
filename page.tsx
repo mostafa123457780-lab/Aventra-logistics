@@ -1,138 +1,160 @@
-"use client";
+import { createClient } from "@/lib/supabase/server";
+import { StatusBadge } from "@/components/dashboard/StatusBadge";
+import { EmptyState } from "@/components/dashboard/EmptyState";
+import { Wallet, AlertCircle, Receipt, CheckCircle2 } from "lucide-react";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { quoteSchema, type QuoteFormValues } from "@/lib/validations/quote";
-import { Input, Textarea } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Reveal } from "@/components/ui/reveal";
+export default async function AccountantPage() {
+  const supabase = await createClient();
 
-const serviceOptions = [
-  { value: "Sea Freight", label: "شحن بحري" },
-  { value: "Air Freight", label: "شحن جوي" },
-  { value: "Land Freight", label: "شحن بري" },
-  { value: "Multimodal", label: "متعدد الوسائط" },
-];
+  const [{ data: invoices }, { count: unpaidCount }, { count: overdueCount }] = await Promise.all([
+    supabase
+      .from("invoices")
+      .select("id, invoice_number, amount, payment_status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(25),
+    supabase.from("invoices").select("id", { count: "exact", head: true }).neq("payment_status", "Paid"),
+    supabase.from("invoices").select("id", { count: "exact", head: true }).eq("payment_status", "Overdue"),
+  ]);
 
-export default function QuotePage() {
-  const [submitted, setSubmitted] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<QuoteFormValues>({ resolver: zodResolver(quoteSchema) });
+  const { data: payments } = await supabase
+    .from("payments")
+    .select("id, amount, payment_method, payment_date, invoices(invoice_number)")
+    .order("payment_date", { ascending: false })
+    .limit(20);
 
-  async function onSubmit(values: QuoteFormValues) {
-    const res = await fetch("/api/requests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-    if (res.ok) {
-      setSubmitted(true);
-      reset();
-    }
-  }
+  const { data: expenses } = await supabase
+    .from("expenses")
+    .select("id, expense_type, amount, notes, created_at")
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  const totalAmount = (invoices ?? []).reduce((sum, inv) => sum + (inv.amount ?? 0), 0);
+  const paidCount = (invoices ?? []).filter((i) => i.payment_status === "Paid").length;
+
+  const cards = [
+    { label: "إجمالي قيمة الفواتير", value: `${totalAmount.toLocaleString("ar-EG")} ج.م`, icon: Wallet },
+    { label: "فواتير غير مدفوعة", value: unpaidCount ?? 0, icon: AlertCircle },
+    { label: "فواتير متأخرة", value: overdueCount ?? 0, icon: Receipt },
+    { label: "فواتير مدفوعة", value: paidCount, icon: CheckCircle2 },
+  ];
 
   return (
-    <div className="bg-paper py-16">
-      <div className="max-w-2xl mx-auto px-6">
-        <Reveal className="mb-10">
-          <span className="font-mono text-xs text-rust">عرض سعر</span>
-          <h1 className="text-3xl font-extrabold tracking-tight leading-[1.25] mt-2 mb-3">احكي لنا عن شحنتك</h1>
-          <p className="text-steel">هنرد عليك بعرض سعر مفصّل في أقل من 24 ساعة.</p>
-        </Reveal>
+    <div>
+      <h1 className="text-2xl font-extrabold tracking-tight mb-6">الحسابات</h1>
 
-        {submitted ? (
-          <Reveal className="bg-white border border-black/10 rounded-xl p-8 text-center">
-            <h2 className="font-bold text-lg mb-2">تم استلام طلبك ✅</h2>
-            <p className="text-steel text-sm">فريق المبيعات هيتواصل معاك على الإيميل أو الهاتف اللي كتبته.</p>
-          </Reveal>
-        ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white border border-black/10 rounded-xl p-6 sm:p-8 space-y-5">
-            {/* Honeypot — hidden from real users via CSS, bots tend to fill every input. */}
-            <input
-              type="text"
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
-              {...register("website")}
-            />
-            <div className="grid sm:grid-cols-2 gap-5">
-              <Field label="الاسم بالكامل" error={errors.full_name?.message}>
-                <Input {...register("full_name")} placeholder="مثال: محمد أحمد" />
-              </Field>
-              <Field label="اسم الشركة (اختياري)">
-                <Input {...register("company_name")} placeholder="اسم شركتك" />
-              </Field>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {cards.map((c) => {
+          const Icon = c.icon;
+          return (
+            <div key={c.label} className="bg-white border border-black/10 rounded-xl p-5">
+              <Icon className="text-amber mb-3" size={22} />
+              <div className="text-2xl font-extrabold" dir="ltr">
+                {c.value}
+              </div>
+              <div className="text-sm text-steel mt-1">{c.label}</div>
             </div>
-
-            <div className="grid sm:grid-cols-2 gap-5">
-              <Field label="البريد الإلكتروني" error={errors.email?.message}>
-                <Input {...register("email")} type="email" dir="ltr" placeholder="name@company.com" />
-              </Field>
-              <Field label="رقم الهاتف" error={errors.phone?.message}>
-                <Input {...register("phone")} dir="ltr" placeholder="+20 1xx xxx xxxx" />
-              </Field>
-            </div>
-
-            <Field label="نوع الشحن" error={errors.service_type?.message}>
-              <select
-                {...register("service_type")}
-                className="w-full rounded-xl border border-black/15 px-4 py-3 outline-none focus:border-amber bg-white"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  اختر نوع الشحن
-                </option>
-                {serviceOptions.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </Field>
-
-            <div className="grid sm:grid-cols-2 gap-5">
-              <Field label="نقطة الانطلاق" error={errors.origin?.message}>
-                <Input {...register("origin")} placeholder="مثال: جدة" />
-              </Field>
-              <Field label="نقطة الوصول" error={errors.destination?.message}>
-                <Input {...register("destination")} placeholder="مثال: القاهرة" />
-              </Field>
-            </div>
-
-            <Field label="تفاصيل الشحنة" error={errors.description?.message}>
-              <Textarea {...register("description")} placeholder="نوع البضاعة، الوزن التقريبي، التوقيت المطلوب..." />
-            </Field>
-
-            <Button type="submit" variant="dark" disabled={isSubmitting} className="w-full">
-              {isSubmitting ? "بنبعت الطلب..." : "اطلب عرض السعر"}
-            </Button>
-          </form>
-        )}
+          );
+        })}
       </div>
-    </div>
-  );
-}
 
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="text-sm font-bold text-ink2 mb-1.5 block">{label}</span>
-      {children}
-      {error && <span className="text-rust text-xs mt-1 block">{error}</span>}
-    </label>
+      <h2 className="text-lg font-bold mb-3">أحدث الفواتير</h2>
+      {!invoices || invoices.length === 0 ? (
+        <EmptyState title="مفيش فواتير لسه" />
+      ) : (
+        <div className="bg-white border border-black/10 rounded-xl overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-right text-steel border-b border-black/10">
+                <th className="p-4 font-medium">رقم الفاتورة</th>
+                <th className="p-4 font-medium">المبلغ</th>
+                <th className="p-4 font-medium">الحالة</th>
+                <th className="p-4 font-medium">التاريخ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {invoices.map((inv) => (
+                <tr key={inv.id} className="border-b border-black/5 last:border-0">
+                  <td className="p-4 font-mono" dir="ltr">
+                    {inv.invoice_number}
+                  </td>
+                  <td className="p-4 font-bold" dir="ltr">
+                    {inv.amount} ج.م
+                  </td>
+                  <td className="p-4">
+                    <StatusBadge status={inv.payment_status} />
+                  </td>
+                  <td className="p-4 text-steel">{new Date(inv.created_at).toLocaleDateString("ar-EG")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <h2 className="text-lg font-bold mb-3 mt-8">الدفعات</h2>
+      {!payments || payments.length === 0 ? (
+        <EmptyState title="مفيش دفعات مُسجّلة لسه" />
+      ) : (
+        <div className="bg-white border border-black/10 rounded-xl overflow-x-auto mb-8">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-right text-steel border-b border-black/10">
+                <th className="p-4 font-medium">رقم الفاتورة</th>
+                <th className="p-4 font-medium">المبلغ</th>
+                <th className="p-4 font-medium">طريقة الدفع</th>
+                <th className="p-4 font-medium">التاريخ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payments.map((p) => {
+                const invoice = Array.isArray(p.invoices) ? p.invoices[0] : p.invoices;
+                return (
+                  <tr key={p.id} className="border-b border-black/5 last:border-0">
+                    <td className="p-4 font-mono" dir="ltr">
+                      {invoice?.invoice_number ?? "—"}
+                    </td>
+                    <td className="p-4 font-bold" dir="ltr">
+                      {p.amount} ج.م
+                    </td>
+                    <td className="p-4">{p.payment_method ?? "—"}</td>
+                    <td className="p-4 text-steel">{new Date(p.payment_date).toLocaleDateString("ar-EG")}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <h2 className="text-lg font-bold mb-3">المصروفات</h2>
+      {!expenses || expenses.length === 0 ? (
+        <EmptyState title="مفيش مصروفات مُسجّلة لسه" />
+      ) : (
+        <div className="bg-white border border-black/10 rounded-xl overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-right text-steel border-b border-black/10">
+                <th className="p-4 font-medium">النوع</th>
+                <th className="p-4 font-medium">المبلغ</th>
+                <th className="p-4 font-medium">ملاحظات</th>
+                <th className="p-4 font-medium">التاريخ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {expenses.map((e) => (
+                <tr key={e.id} className="border-b border-black/5 last:border-0">
+                  <td className="p-4 font-bold">{e.expense_type ?? "—"}</td>
+                  <td className="p-4" dir="ltr">
+                    {e.amount} ج.م
+                  </td>
+                  <td className="p-4 text-steel">{e.notes ?? "—"}</td>
+                  <td className="p-4 text-steel">{new Date(e.created_at).toLocaleDateString("ar-EG")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 }
