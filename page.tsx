@@ -1,53 +1,45 @@
 import { createClient } from "@/lib/supabase/server";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 
-export default async function AdminAuditLogPage() {
+export default async function AdminTrackingPage() {
   const supabase = await createClient();
 
-  const { data: logs } = await supabase
-    .from("audit_logs")
-    .select("id, action, table_name, record_id, created_at, profiles(full_name, email)")
+  const { data: events } = await supabase
+    .from("shipment_tracking")
+    .select("id, location, status, notes, created_at, shipments(tracking_number)")
     .order("created_at", { ascending: false })
     .limit(50);
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold tracking-tight mb-6">سجل الأمان</h1>
-      <p className="text-sm text-steel mb-6">
-        سجل بكل العمليات الحساسة في النظام. هذا السجل للقراءة فقط ولا يمكن لأي مستخدم تعديله.
-      </p>
+      <h1 className="text-2xl font-extrabold tracking-tight mb-6">تتبع الشحنات</h1>
 
-      {!logs || logs.length === 0 ? (
-        <EmptyState
-          title="مفيش سجلات أمان لسه"
-          hint="السجل بيتعبّى تلقائيًا من خلال إجراءات backend موثّقة. لو حابب نفعّل تسجيل تلقائي لعمليات معيّنة، قولنا أي عمليات بالتحديد."
-        />
+      {!events || events.length === 0 ? (
+        <EmptyState title="مفيش تحديثات تتبع مُسجّلة لسه" />
       ) : (
         <div className="bg-white border border-black/10 rounded-xl overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-right text-steel border-b border-black/10">
-                <th className="p-4 font-medium">المستخدم</th>
-                <th className="p-4 font-medium">الإجراء</th>
-                <th className="p-4 font-medium">الجدول</th>
-                <th className="p-4 font-medium">السجل</th>
+                <th className="p-4 font-medium">رقم البوليصة</th>
+                <th className="p-4 font-medium">الموقع</th>
+                <th className="p-4 font-medium">الحالة</th>
+                <th className="p-4 font-medium">ملاحظات</th>
                 <th className="p-4 font-medium">التاريخ</th>
               </tr>
             </thead>
             <tbody>
-              {logs.map((l) => {
-                const profile = Array.isArray(l.profiles) ? l.profiles[0] : l.profiles;
+              {events.map((e) => {
+                const shipment = Array.isArray(e.shipments) ? e.shipments[0] : e.shipments;
                 return (
-                  <tr key={l.id} className="border-b border-black/5 last:border-0">
-                    <td className="p-4 font-bold">{profile?.full_name ?? "نظام"}</td>
-                    <td className="p-4">{l.action}</td>
+                  <tr key={e.id} className="border-b border-black/5 last:border-0">
                     <td className="p-4 font-mono" dir="ltr">
-                      {l.table_name}
+                      {shipment?.tracking_number ?? "—"}
                     </td>
-                    <td className="p-4 font-mono text-steel" dir="ltr">
-                      {l.record_id ?? "—"}
-                    </td>
-                    <td className="p-4 text-steel">{new Date(l.created_at).toLocaleString("ar-EG")}</td>
+                    <td className="p-4">{e.location ?? "—"}</td>
+                    <td className="p-4 font-bold">{e.status}</td>
+                    <td className="p-4 text-steel">{e.notes ?? "—"}</td>
+                    <td className="p-4 text-steel">{new Date(e.created_at).toLocaleString("ar-EG")}</td>
                   </tr>
                 );
               })}
