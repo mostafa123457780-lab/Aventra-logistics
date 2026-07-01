@@ -1,109 +1,96 @@
 import { createClient } from "@/lib/supabase/server";
+import { StatusBadge } from "@/components/dashboard/StatusBadge";
 import { EmptyState } from "@/components/dashboard/EmptyState";
-import { Warehouse as WarehouseIcon } from "lucide-react";
+import { Boxes, Layers as ContainerIcon } from "lucide-react";
 
-export default async function WarehousePage() {
+export default async function WarehouseRolePage() {
   const supabase = await createClient();
 
-  const { data: warehouses } = await supabase
-    .from("warehouses")
-    .select("id, warehouse_name, warehouse_code, country, city, capacity")
-    .order("warehouse_name", { ascending: true });
-
-  const { data: inventory } = await supabase
-    .from("inventory")
-    .select("id, item_name, sku, quantity, status")
-    .order("id", { ascending: false })
-    .limit(20);
-
-  const { data: locations } = await supabase
-    .from("warehouse_locations")
-    .select("id, zone, rack, shelf, bin, warehouses(warehouse_name)")
-    .order("id", { ascending: false })
-    .limit(20);
+  const [{ data: inventory }, { data: containers }] = await Promise.all([
+    supabase
+      .from("inventory")
+      .select("id, item_name, sku, quantity, status, warehouses(warehouse_name)")
+      .order("item_name", { ascending: true })
+      .limit(100),
+    supabase
+      .from("containers")
+      .select("id, container_number, container_type, status, warehouses(warehouse_name)")
+      .order("created_at", { ascending: false })
+      .limit(50),
+  ]);
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold tracking-tight mb-6">المستودعات</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight mb-6">لوحة المستودعات</h1>
 
-      {!warehouses || warehouses.length === 0 ? (
-        <EmptyState
-          title="مفيش مستودعات مُسجّلة لسه"
-          hint="أضف مستودع من Supabase Table Editor، أو سيتم بناء فورم إضافة من هنا قريبًا."
-        />
-      ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {warehouses.map((w) => (
-            <div key={w.id} className="bg-white border border-black/10 rounded-xl p-5">
-              <WarehouseIcon className="text-amber mb-3" size={22} />
-              <div className="font-bold">{w.warehouse_name}</div>
-              <div className="text-xs text-steel font-mono mt-0.5" dir="ltr">
-                {w.warehouse_code}
-              </div>
-              <div className="text-sm text-steel mt-2">
-                {w.city}، {w.country}
-              </div>
-              {w.capacity != null && <div className="text-sm text-steel mt-1">السعة: {w.capacity}</div>}
-            </div>
-          ))}
-        </div>
-      )}
-
-      <h2 className="text-lg font-bold mb-3">أحدث حركة مخزون</h2>
+      <div className="flex items-center gap-2 mb-3">
+        <Boxes size={18} className="text-amber" />
+        <h2 className="text-lg font-bold">المخزون</h2>
+      </div>
       {!inventory || inventory.length === 0 ? (
-        <EmptyState title="مفيش بنود مخزون مُسجّلة لسه" />
+        <EmptyState title="مفيش أصناف مُسجّلة لسه" />
       ) : (
-        <div className="bg-white border border-black/10 rounded-xl overflow-x-auto">
+        <div className="bg-white border border-black/10 rounded-xl overflow-x-auto mb-8">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-right text-steel border-b border-black/10">
-                <th className="p-4 font-medium">البند</th>
+                <th className="p-4 font-medium">الصنف</th>
                 <th className="p-4 font-medium">SKU</th>
                 <th className="p-4 font-medium">الكمية</th>
+                <th className="p-4 font-medium">المستودع</th>
                 <th className="p-4 font-medium">الحالة</th>
               </tr>
             </thead>
             <tbody>
-              {inventory.map((i) => (
-                <tr key={i.id} className="border-b border-black/5 last:border-0">
-                  <td className="p-4 font-bold">{i.item_name}</td>
-                  <td className="p-4 font-mono text-steel" dir="ltr">
-                    {i.sku ?? "—"}
-                  </td>
-                  <td className="p-4">{i.quantity}</td>
-                  <td className="p-4 text-steel">{i.status ?? "—"}</td>
-                </tr>
-              ))}
+              {inventory.map((i: any) => {
+                const warehouse = Array.isArray(i.warehouses) ? i.warehouses[0] : i.warehouses;
+                return (
+                  <tr key={i.id} className="border-b border-black/5 last:border-0">
+                    <td className="p-4 font-bold">{i.item_name}</td>
+                    <td className="p-4 font-mono text-steel" dir="ltr">
+                      {i.sku ?? "—"}
+                    </td>
+                    <td className="p-4">{i.quantity}</td>
+                    <td className="p-4 text-steel">{warehouse?.warehouse_name ?? "—"}</td>
+                    <td className="p-4">{i.status ? <StatusBadge status={i.status} /> : "—"}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
 
-      <h2 className="text-lg font-bold mb-3 mt-8">مواقع التخزين</h2>
-      {!locations || locations.length === 0 ? (
-        <EmptyState title="مفيش مواقع تخزين مُسجّلة لسه" />
+      <div className="flex items-center gap-2 mb-3">
+        <ContainerIcon size={18} className="text-amber" />
+        <h2 className="text-lg font-bold">الحاويات</h2>
+      </div>
+      {!containers || containers.length === 0 ? (
+        <EmptyState title="مفيش حاويات مُسجّلة لسه" />
       ) : (
         <div className="bg-white border border-black/10 rounded-xl overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-right text-steel border-b border-black/10">
+                <th className="p-4 font-medium">رقم الحاوية</th>
+                <th className="p-4 font-medium">النوع</th>
                 <th className="p-4 font-medium">المستودع</th>
-                <th className="p-4 font-medium">المنطقة</th>
-                <th className="p-4 font-medium">الرف</th>
-                <th className="p-4 font-medium">الدرف</th>
-                <th className="p-4 font-medium">الصندوق</th>
+                <th className="p-4 font-medium">الحالة</th>
               </tr>
             </thead>
             <tbody>
-              {locations.map((l) => {
-                const wh = Array.isArray(l.warehouses) ? l.warehouses[0] : l.warehouses;
+              {containers.map((c: any) => {
+                const warehouse = Array.isArray(c.warehouses) ? c.warehouses[0] : c.warehouses;
                 return (
-                  <tr key={l.id} className="border-b border-black/5 last:border-0">
-                    <td className="p-4 font-bold">{wh?.warehouse_name ?? "—"}</td>
-                    <td className="p-4">{l.zone ?? "—"}</td>
-                    <td className="p-4">{l.rack ?? "—"}</td>
-                    <td className="p-4">{l.shelf ?? "—"}</td>
-                    <td className="p-4">{l.bin ?? "—"}</td>
+                  <tr key={c.id} className="border-b border-black/5 last:border-0">
+                    <td className="p-4 font-mono" dir="ltr">
+                      {c.container_number}
+                    </td>
+                    <td className="p-4">{c.container_type}</td>
+                    <td className="p-4 text-steel">{warehouse?.warehouse_name ?? "—"}</td>
+                    <td className="p-4">
+                      <StatusBadge status={c.status} />
+                    </td>
                   </tr>
                 );
               })}

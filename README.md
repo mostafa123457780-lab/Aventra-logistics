@@ -1,44 +1,53 @@
 # AVENTRA Logistics
 
-## شغّل المشروع محليًا
+## Phase 1 — Foundation
+
+This phase includes:
+
+- Next.js 14 (App Router) + TypeScript + Tailwind project setup
+- Full folder structure for a role-based enterprise dashboard
+- Supabase authentication (login, register, forgot/reset password)
+- Role-Based Access Control (RBAC) with 7 roles: `CUSTOMER`, `ADMIN`,
+  `OPERATIONS_MANAGER`, `ACCOUNTANT`, `WAREHOUSE_MANAGER`,
+  `WAREHOUSE_EMPLOYEE`, `DRIVER`
+- Middleware-based route protection
+- Dashboard shell (sidebar navigation per role, header, sign-out)
+- Working modules: Customer (overview, shipments, invoices, requests) and
+  Admin (overview, shipments, invoices, customers, warehouses)
+- Placeholder shells for Operations / Accountant / Warehouse / Driver —
+  their real modules ship in Phase 2+
+- `supabase/schema.sql` — the 10 confirmed tables with indexes, the
+  `handle_new_user` signup trigger, and a rewritten RLS policy set that
+  fixes the recursive-subquery performance issue from the previous schema
+
+## Run locally
 
 ```bash
 npm install
-cp .env.example .env.local   # وضيف بيانات مشروع Supabase بتاعك
+cp .env.example .env.local   # fill in your Supabase project URL + anon key
 npm run dev
 ```
 
-افتح http://localhost:3000
+Open http://localhost:3000
 
-## اللي تم بناءه دلوقتي (Phase 1 + جزء من Phase 2)
+## Apply the database schema
 
-**الموقع العام:**
-- الصفحات: الرئيسية، عن الشركة، خدماتنا، تتبع الشحنة، طلب عرض سعر، المدونة، الأسئلة الشائعة، تواصل معنا.
-- نظام تصميم كامل (خطوط، ألوان، حركة) + صورة خلفية حقيقية في الهيرو.
+Run `supabase/schema.sql` (or `supabase/migrations/0001_initial_schema.sql`,
+identical content) in the Supabase SQL editor. It is written with
+`if not exists` / `or replace` / `drop policy if exists` everywhere, so it
+is safe to re-run against a project that already has some of these tables —
+it will not drop or duplicate existing data.
 
-**تسجيل الدخول والحسابات (`src/app/auth`):**
-- تسجيل دخول، إنشاء حساب (مع تأكيد إيميل)، نسيت كلمة السر، تعيين كلمة سر جديدة — كل ده متصل فعليًا بـ Supabase Auth.
-- عند التسجيل، تريجر `handle_new_user` في `supabase/schema.sql` بيعمل تلقائيًا صف في `profiles` و`customers` بدور **CUSTOMER**.
-- `middleware.ts` بيحمي مسارات `/dashboard/*` ويحوّل غير المسجلين لصفحة الدخول.
+⚠️ It does **not** yet include `vehicles`, `drivers`, `payments`,
+`containers`, or the other tables mentioned in the long-term roadmap —
+those will be defined in Phase 2 once we confirm their exact column names
+against your live project, to avoid guessing and creating a schema that
+conflicts with data you already have.
 
-**لوحة تحكم العميل (`/dashboard/customer`):**
-- نظرة عامة، شحناتي، فواتيري، طلباتي — بيانات حقيقية من Supabase (مفعّل عليها RLS فعليًا).
+## What's next (Phase 2+)
 
-**لوحة تحكم الأدمن (`/dashboard/admin`):**
-- نظرة عامة بإحصائيات حقيقية (عدد الشحنات، العملاء، المستودعات، الفواتير غير المدفوعة).
-
-**باقي الأدوار** (operations, accountant, warehouse, driver): صفحات placeholder جاهزة في المسار الصحيح، لسه محتاجة محتوى فعلي.
-
-## اللي لسه محتاج بناء (تكملة Phase 2)
-
-1. **محتوى فعلي لباقي اللوحات**: عمليات (رحلات/مركبات)، حسابات (فواتير/مدفوعات/تقارير)، مستودعات (مخزون)، سائق (رحلاته).
-2. **صفحة إدارة مستخدمين للأدمن** (`/dashboard/admin/users`) لتغيير الأدوار.
-3. **كل الـ API Routes** الباقية (shipments, invoices, payments, vehicles, drivers, containers, reports...).
-4. **ربط صفحة التتبع العامة** بالداتا الحقيقية بدل الـ Mock.
-5. **i18n كامل** (`/ar` و `/en` فعليين) عبر `next-intl`.
-
-## خطوات تشغيل Supabase المحدّثة
-
-بعد تشغيل `supabase/schema.sql`، التريجر بيتظبط تلقائيًا — أي تسجيل جديد من `/auth/register` هيعمل صف في `profiles` و`customers` لوحده.
-
-قولّي تحب تبدأ في إيه من المرحلة الجاية، وهنبنيها خطوة بخطوة.
+1. Vehicles, drivers, payments, containers tables + their dashboard pages
+2. Operations / Accountant / Warehouse / Driver real modules
+3. Cinematic marketing homepage (hero with headquarters/aircraft/ships imagery)
+4. Reports & analytics
+5. i18n (`ar` / `en`)

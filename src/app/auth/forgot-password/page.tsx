@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
       <div className="text-center">
         <h1 className="text-2xl font-extrabold tracking-tight mb-3">شيك على إيميلك 📩</h1>
         <p className="text-steel text-sm">
-          لو الإيميل ده مسجّل عندنا، هتلاقي لينك لإعادة تعيين كلمة السر في صندوق الوارد.
+          لو الإيميل ده مسجل عندنا، هتلاقي لينك لإعادة تعيين كلمة السر في صندوق الوارد.
         </p>
       </div>
     );
@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold tracking-tight mb-2">نسيت كلمة السر؟</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight mb-2">نسيت كلمة السر</h1>
       <p className="text-steel text-sm mb-7">اكتب إيميلك وهنبعتلك لينك لإعادة التعيين.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

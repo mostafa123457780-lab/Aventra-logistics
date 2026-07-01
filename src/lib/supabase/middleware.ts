@@ -12,21 +12,7 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(
-          cookiesToSet: {
-            name: string;
-            value: string;
-            options?: {
-              path?: string;
-              domain?: string;
-              httpOnly?: boolean;
-              sameSite?: "lax" | "strict" | "none";
-              secure?: boolean;
-              maxAge?: number;
-              expires?: number | Date;
-            };
-          }[]
-        ) {
+        setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
@@ -37,7 +23,11 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const { data } = await supabase.auth.getUser();
+  // IMPORTANT: do not run any code between createServerClient and getUser().
+  // A simple mistake here can make it hard to debug random logouts.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  return { supabaseResponse, user: data.user, supabase };
+  return { supabaseResponse, user };
 }

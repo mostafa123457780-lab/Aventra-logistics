@@ -29,6 +29,7 @@ export default function LoginPage() {
       setServerError("البريد الإلكتروني أو كلمة السر غير صحيحة.");
       return;
     }
+
     router.push(searchParams.get("next") || "/dashboard");
     router.refresh();
   }

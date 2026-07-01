@@ -5,26 +5,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#0B1B2B",
-        ink2: "#10202F",
-        paper: "#EEEDE7",
-        amber: "#FF7A1A",
-        steel: "#5B6B7A",
-        rust: "#C23B22",
+        ink: "#0B1220",
+        paper: "#F7F8FA",
+        amber: "#D9A441",
+        rust: "#B3452C",
+        steel: "#5B6472",
       },
       fontFamily: {
-        sans: ["var(--font-tajawal)", "sans-serif"],
-        display: ["var(--font-bigshoulders)", "var(--font-tajawal)", "sans-serif"],
-        mono: ["var(--font-plexmono)", "monospace"],
-      },
-      keyframes: {
-        dash: { to: { strokeDashoffset: "-260" } },
-      },
-      animation: {
-        dash: "dash 18s linear infinite",
+        display: ["var(--font-tajawal)", "sans-serif"],
+        sans: ["var(--font-big-shoulders)", "sans-serif"],
+        mono: ["var(--font-plex-mono)", "monospace"],
       },
     },
   },
   plugins: [],
 };
+
 export default config;

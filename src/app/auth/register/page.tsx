@@ -26,13 +26,15 @@ export default function RegisterPage() {
       password: values.password,
       options: {
         // Picked up by the handle_new_user trigger (see supabase/schema.sql)
-        // to populate the profiles table with role = CUSTOMER by default.
+        // to populate the profiles + customers tables with role = CUSTOMER by default.
         data: { full_name: values.full_name, phone: values.phone },
       },
     });
 
     if (error) {
-      setServerError(error.message === "User already registered" ? "البريد الإلكتروني مستخدم من قبل." : "حصل خطأ، حاول تاني.");
+      setServerError(
+        error.message === "User already registered" ? "البريد الإلكتروني مستخدم من قبل." : "حصل خطأ، حاول تاني."
+      );
       return;
     }
     setSubmitted(true);
@@ -41,9 +43,9 @@ export default function RegisterPage() {
   if (submitted) {
     return (
       <div className="text-center">
-        <h1 className="text-2xl font-extrabold tracking-tight mb-3">تأكد من بريدك الإلكتروني ✅</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight mb-3">تأكّد من بريدك الإلكتروني ✅</h1>
         <p className="text-steel text-sm">
-          بعتنا لينك تأكيد على إيميلك. افتحه ودوس على اللينك عشان تفعّل حسابك وتقدر تسجل دخول.
+          بعتنالك رابط تأكيد. دوس عليه عشان تفعّل حسابك، وبعدين سجّل دخولك.
         </p>
       </div>
     );

@@ -2,16 +2,16 @@ import { z } from "zod";
 
 export const loginSchema = z.object({
   email: z.string().email("بريد إلكتروني غير صحيح"),
-  password: z.string().min(6, "كلمة السر لازم تكون 6 حروف على الأقل"),
+  password: z.string().min(1, "كلمة السر مطلوبة"),
 });
 export type LoginValues = z.infer<typeof loginSchema>;
 
 export const registerSchema = z
   .object({
-    full_name: z.string().min(2, "اكتب الاسم بالكامل"),
+    full_name: z.string().min(2, "الاسم قصير جدًا"),
     email: z.string().email("بريد إلكتروني غير صحيح"),
     phone: z.string().min(8, "رقم هاتف غير صحيح"),
-    password: z.string().min(6, "كلمة السر لازم تكون 6 حروف على الأقل"),
+    password: z.string().min(8, "كلمة السر لازم تكون 8 أحرف على الأقل"),
     confirm_password: z.string(),
   })
   .refine((data) => data.password === data.confirm_password, {
@@ -27,7 +27,7 @@ export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = z
   .object({
-    password: z.string().min(6, "كلمة السر لازم تكون 6 حروف على الأقل"),
+    password: z.string().min(8, "كلمة السر لازم تكون 8 أحرف على الأقل"),
     confirm_password: z.string(),
   })
   .refine((data) => data.password === data.confirm_password, {

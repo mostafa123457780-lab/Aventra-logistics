@@ -25,7 +25,7 @@ export default async function CustomerShipmentsPage() {
       <h1 className="text-2xl font-extrabold tracking-tight mb-6">شحناتي</h1>
 
       {!shipments || shipments.length === 0 ? (
-        <EmptyState title="مفيش شحنات لسه" hint="أي شحنة تطلبها هتظهر هنا تلقائيًا." />
+        <EmptyState title="مفيش شحنة تطلبها هتظهر هنا تلقائيًا" />
       ) : (
         <div className="bg-white border border-black/10 rounded-xl overflow-x-auto">
           <table className="w-full text-sm">
@@ -41,10 +41,16 @@ export default async function CustomerShipmentsPage() {
             <tbody>
               {shipments.map((s) => (
                 <tr key={s.id} className="border-b border-black/5 last:border-0">
-                  <td className="p-4 font-mono" dir="ltr">{s.tracking_number}</td>
-                  <td className="p-4">{s.origin} → {s.destination}</td>
-                  <td className="p-4">{s.service_type}</td>
-                  <td className="p-4"><StatusBadge status={s.status} /></td>
+                  <td className="p-4 font-mono" dir="ltr">
+                    {s.tracking_number}
+                  </td>
+                  <td className="p-4">
+                    {s.origin} → {s.destination}
+                  </td>
+                  <td className="p-4 text-steel">{s.service_type ?? "—"}</td>
+                  <td className="p-4">
+                    <StatusBadge status={s.status} />
+                  </td>
                   <td className="p-4 text-steel">{new Date(s.created_at).toLocaleDateString("ar-EG")}</td>
                 </tr>
               ))}

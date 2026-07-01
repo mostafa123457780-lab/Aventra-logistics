@@ -6,8 +6,9 @@ export default async function AdminCustomersPage() {
 
   const { data: customers } = await supabase
     .from("customers")
-    .select("id, company_name, address, created_at, profiles(full_name, email, phone)")
-    .order("created_at", { ascending: false });
+    .select("id, created_at, profiles(full_name, email, phone)")
+    .order("created_at", { ascending: false })
+    .limit(100);
 
   return (
     <div>
@@ -21,23 +22,21 @@ export default async function AdminCustomersPage() {
             <thead>
               <tr className="text-right text-steel border-b border-black/10">
                 <th className="p-4 font-medium">الاسم</th>
-                <th className="p-4 font-medium">الشركة</th>
                 <th className="p-4 font-medium">البريد الإلكتروني</th>
                 <th className="p-4 font-medium">الهاتف</th>
                 <th className="p-4 font-medium">تاريخ التسجيل</th>
               </tr>
             </thead>
             <tbody>
-              {customers.map((c) => {
+              {customers.map((c: any) => {
                 const profile = Array.isArray(c.profiles) ? c.profiles[0] : c.profiles;
                 return (
                   <tr key={c.id} className="border-b border-black/5 last:border-0">
                     <td className="p-4 font-bold">{profile?.full_name ?? "—"}</td>
-                    <td className="p-4">{c.company_name ?? "—"}</td>
-                    <td className="p-4" dir="ltr">
+                    <td className="p-4 text-steel" dir="ltr">
                       {profile?.email ?? "—"}
                     </td>
-                    <td className="p-4" dir="ltr">
+                    <td className="p-4 text-steel" dir="ltr">
                       {profile?.phone ?? "—"}
                     </td>
                     <td className="p-4 text-steel">{new Date(c.created_at).toLocaleDateString("ar-EG")}</td>

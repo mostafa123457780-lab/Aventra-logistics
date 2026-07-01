@@ -12,17 +12,15 @@ export default async function CustomerOverviewPage() {
     .eq("profile_id", userData.user!.id)
     .single();
 
-  const customerId = customer?.id;
-
-  const [{ count: shipmentsCount }, { count: invoicesCount }, { count: requestsCount }] = customerId
+  const [{ count: shipmentsCount }, { count: invoicesCount }, { count: requestsCount }] = customer
     ? await Promise.all([
-        supabase.from("shipments").select("id", { count: "exact", head: true }).eq("customer_id", customerId),
+        supabase.from("shipments").select("id", { count: "exact", head: true }).eq("customer_id", customer.id),
         supabase
           .from("invoices")
           .select("id", { count: "exact", head: true })
-          .eq("customer_id", customerId)
+          .eq("customer_id", customer.id)
           .neq("payment_status", "Paid"),
-        supabase.from("requests").select("id", { count: "exact", head: true }).eq("customer_id", customerId),
+        supabase.from("requests").select("id", { count: "exact", head: true }).eq("customer_id", customer.id),
       ])
     : [{ count: 0 }, { count: 0 }, { count: 0 }];
 
