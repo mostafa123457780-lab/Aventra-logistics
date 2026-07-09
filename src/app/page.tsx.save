@@ -1,0 +1,40 @@
+
+-export default function HomePage() {
+  return (
+    <main className="min-h-screen flex flex-col items-center justify-center text-center px-6">
+      <span className="font-display font-extrabold text-3xl tracking-tight mb-3">AVENTRA</span>
+      <h1 className="text-2xl font-bold text-steel mb-8 max-w-md">
+        نظام إدارة الشحن واللوجستيات — الواجهة التسويقية الكاملة هتتضاف في مرحلة لاحقة.
+      </h1>
+      <div className="flex gap-3">
+        <Link href="/auth/login" className="bg-ink text-white rounded-lg px-6 py-3 text-sm font-bold">
+          تسجيل الدخول
+        </Link>
+        <Link href="/auth/register" className="border border-black/15 rounded-lg px-6 py-3 text-sm font-bold">
+         ~إنشاء حساب
+        </Link>
+      </div>
+    </main>
+  );
+}rm -rf src/app/page.tsx && echo 'import Link from "next/link";
+
+export default function HomePage() {
+  return (
+    <main className="min-h-screen flex flex-col items-center justify-center p-24">
+      <h1 className="text-4xl font-bold mb-8">مرحباً بك في Aventra Logistics</h1>
+      <div className="flex gap-4">
+        <Link href="/auth/login" className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          تسجيل الدخول
+        </Link>
+        <Link href="/auth/register" className="px-6 py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50">
+          إنشاء حساب
+        </Link>
+      </div>
+    </main>
+  );
+}' > src/app/page.tsx && rm -rf .next && npm run dev
+
+
+	
+-
+-
