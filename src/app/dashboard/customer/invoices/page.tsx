@@ -49,7 +49,7 @@ export default async function CustomerInvoicesPage() {
                   <td className="p-4">
                     <StatusBadge status={inv.payment_status} />
                   </td>
-                  <td className="p-4 text-steel">{new Date(inv.created_at).toLocaleDateString("ar-EG")}</td>
+                  <td className="p-4 text-steel">{new Date(inv.created_at ?? "").toLocaleDateString("ar-EG")}</td>
                 </tr>
               ))}
             </tbody>

@@ -34,6 +34,7 @@ const NAV_BY_ROLE: Record<UserRole, { href: string; label: string; icon: any }[]
   ],
   OPERATIONS_MANAGER: [
     { href: "/dashboard/operations", label: "العمليات", icon: Truck },
+    { href: "/dashboard/operations/orders", label: "الطلبات", icon: Package },
   ],
   ACCOUNTANT: [
     { href: "/dashboard/accountant", label: "الحسابات", icon: Receipt },

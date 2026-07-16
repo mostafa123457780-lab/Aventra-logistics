@@ -51,7 +51,7 @@ export default async function CustomerShipmentsPage() {
                   <td className="p-4">
                     <StatusBadge status={s.status} />
                   </td>
-                  <td className="p-4 text-steel">{new Date(s.created_at).toLocaleDateString("ar-EG")}</td>
+                  <td className="p-4 text-steel">{new Date(s.created_at ?? "").toLocaleDateString("ar-EG")}</td>
                 </tr>
               ))}
             </tbody>

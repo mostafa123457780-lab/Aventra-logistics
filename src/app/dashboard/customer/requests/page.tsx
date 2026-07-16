@@ -31,7 +31,7 @@ export default async function CustomerRequestsPage() {
             <div key={r.id} className="bg-white border border-black/10 rounded-xl p-5">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-bold">{r.request_type}</span>
-                <span className="text-xs text-steel">{new Date(r.created_at).toLocaleDateString("ar-EG")}</span>
+                <span className="text-xs text-steel">{new Date(r.created_at ?? "").toLocaleDateString("ar-EG")}</span>
               </div>
               <p className="text-sm text-steel">{r.description}</p>
             </div>
