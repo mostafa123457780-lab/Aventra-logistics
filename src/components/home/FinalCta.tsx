@@ -1,16 +1,16 @@
-import { Reveal } from "@/components/ui/reveal";
-import { Button } from "@/components/ui/button";
+'use client';
+import Link from 'next/link';
 
-export function FinalCta() {
+export default function FinalCta() {
   return (
-    <section className="bg-amber text-white">
-      <Reveal className="max-w-6xl mx-auto px-6 py-16 text-center">
-        <h2 className="text-3xl font-extrabold tracking-tight leading-[1.25] mb-4">جاهز تشحن مع أفنترا؟</h2>
-        <p className="mb-7 text-white/90">احصل على عرض سعر مفصّل في أقل من 24 ساعة.</p>
-        <Button href="/quote" variant="dark">
-          اطلب عرض سعر الآن
-        </Button>
-      </Reveal>
-    </section>
+    <div className="text-center">
+      <h2>Ready to start?</h2>
+      <Link
+        href="/auth/register"
+        className="inline-block rounded-md bg-indigo-600 px-6 py-3 text-white hover:bg-indigo-700"
+      >
+        Get Started
+      </Link>
+    </div>
   );
 }
