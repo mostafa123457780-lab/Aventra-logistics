@@ -81,4 +81,4 @@ function StatItem({ number, label }: { number: string; label: string }) {
       <div className="text-xs md:text-sm text-gray-300 uppercase tracking-wider mt-1">{label}</div>
     </div>
   );
-      }
+}
