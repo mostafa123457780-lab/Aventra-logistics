@@ -1,42 +1,21 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { Ship, Plane, Truck, Warehouse, Cpu, ArrowRight } from 'lucide-react'
+import { motion } from "framer-motion";
+import { Ship, Plane, Truck, Warehouse, Cpu, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
-const services = [
-  {
-    icon: Ship,
-    title: 'Global SeaFreight',
-    description: 'Fast & Reliable ocean freight services connecting major ports worldwide.',
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    icon: Plane,
-    title: 'AirFreight',
-    description: 'Express air cargo solutions for time-sensitive shipments across the globe.',
-    color: 'from-purple-500 to-pink-500',
-  },
-  {
-    icon: Truck,
-    title: 'Land Transport',
-    description: 'Nationwide coverage with modern fleet for efficient road logistics.',
-    color: 'from-green-500 to-emerald-500',
-  },
-  {
-    icon: Warehouse,
-    title: 'Warehousing',
-    description: 'Safe & Secure storage solutions with advanced inventory management.',
-    color: 'from-orange-500 to-amber-500',
-  },
-  {
-    icon: Cpu,
-    title: 'Technology',
-    description: 'Smart logistics solutions powered by AI, tracking, and real-time data.',
-    color: 'from-indigo-500 to-violet-500',
-  },
-]
+const ICONS = [Ship, Plane, Truck, Warehouse, Cpu];
+const COLORS = [
+  "from-blue-500 to-cyan-500",
+  "from-purple-500 to-pink-500",
+  "from-green-500 to-emerald-500",
+  "from-orange-500 to-amber-500",
+  "from-indigo-500 to-violet-500",
+];
 
 export default function ServicesSection() {
+  const { t } = useLanguage();
+
   return (
     <section className="py-20 md:py-32 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
@@ -48,20 +27,20 @@ export default function ServicesSection() {
           className="text-center mb-16"
         >
           <span className="text-sm font-semibold text-blue-600 uppercase tracking-wider">
-            Our Services
+            {t.services.eyebrow}
           </span>
           <h2 className="text-3xl md:text-5xl font-bold mt-2 text-gray-900 dark:text-white">
-            Comprehensive Logistics Solutions
+            {t.services.title}
           </h2>
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            From sea freight to smart technology, we provide end-to-end logistics services
-            tailored to your business needs.
+            {t.services.description}
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => {
-            const Icon = service.icon
+          {t.services.items.map((service, index) => {
+            const Icon = ICONS[index];
+            const color = COLORS[index];
             return (
               <motion.div
                 key={index}
@@ -71,8 +50,12 @@ export default function ServicesSection() {
                 viewport={{ once: true }}
                 className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 p-8 overflow-hidden"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center text-white text-3xl mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+                />
+                <div
+                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white text-3xl mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                >
                   <Icon className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
@@ -82,14 +65,14 @@ export default function ServicesSection() {
                   {service.description}
                 </p>
                 <div className="mt-6 flex items-center text-blue-600 font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                  <span className="mr-2">Learn More</span>
+                  <span className="me-2">{t.services.learnMore}</span>
                   <ArrowRight className="w-4 h-4" />
                 </div>
               </motion.div>
-            )
+            );
           })}
         </div>
       </div>
     </section>
-  )
+  );
 }
