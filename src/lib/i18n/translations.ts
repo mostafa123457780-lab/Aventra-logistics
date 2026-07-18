@@ -83,3 +83,4 @@ export const translations = {
       contactSales: "Contact Sales",
     },
   },
+};
