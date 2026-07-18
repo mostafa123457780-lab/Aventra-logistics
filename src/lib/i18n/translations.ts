@@ -79,4 +79,8 @@ export const translations = {
       eyebrow: "One Partner. Endless Possibilities.",
       title: "Ready to Transform Your Logistics?",
       description: "Join thousands of businesses that trust AVENTRA for their logistics needs.",
-      getStarted: "Get
+      getStarted: "Get Started Today",
+      contactSales: "Contact Sales",
+    },
+  },
+} as const;
