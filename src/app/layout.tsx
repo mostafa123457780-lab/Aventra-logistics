@@ -7,7 +7,7 @@ const tajawal = Tajawal({
   weight: ["400", "500", "700", "800"],
   variable: "--font-tajawal",
 });
-const bigShoulders = Big_Shoulders_Display({ subsets: ["latin"], const bigShoulders = Big_Shoulders({ subsets: ["latin"], variable: "--font-big-shoulders" });" });
+const bigShoulders = Big_Shoulders({ subsets: ["latin"], variable: "--font-big-shoulders" });
 const plexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono" });
 
 export const metadata: Metadata = {
