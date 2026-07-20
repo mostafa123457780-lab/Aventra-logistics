@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Tajawal, Big_Shoulders_Display, IBM_Plex_Mono } from "next/font/google";
+import { Tajawal, Big_Shoulders, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
 const tajawal = Tajawal({
@@ -7,7 +7,7 @@ const tajawal = Tajawal({
   weight: ["400", "500", "700", "800"],
   variable: "--font-tajawal",
 });
-const bigShoulders = Big_Shoulders_Display({ subsets: ["latin"], variable: "--font-big-shoulders" });
+const bigShoulders = Big_Shoulders_Display({ subsets: ["latin"], variable: "--Big_Shoulders" });
 const plexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono" });
 
 export const metadata: Metadata = {
